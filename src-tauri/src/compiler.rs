@@ -1,4 +1,8 @@
-use std::path::Path;
+use std::{fs, path::Path};
+
+use typst::foundations::{Dict, Str, Value};
+use typst_as_lib::TypstEngine;
+use typst_pdf::PdfOptions;
 
 const PREAMBLE: &str = r#"// Get names as FirstName A. B. LastName
 #let shorten_name(name) = {
@@ -77,17 +81,39 @@ const PREAMBLE: &str = r#"// Get names as FirstName A. B. LastName
 
 const EXECUTION: &str = r#"#let cl = ()
 
-#for nr in csv("../namnlistor/exempel.csv") {
+#import sys: inputs
+
+#let cl = ()
+
+#for nr in csv(inputs.csv_path) {
   cl.push(au_nametag(nr))
 }
 
 #generate(
   cl,
-  [Johanna Zazzi: Nummer\ Marcell Ziegler: Nummer],
+  [#inputs.nodkontakt],
   tag_width: 8.9cm,
   tag_height: 5.5cm,
 )"#;
 
-fn compile(template: &str, csv_path: &Path) {
-    todo!();
+pub fn compile(template: &str, csv_path: &Path, nodkontakt: &str) {
+    // Setup file contents
+    let mut main_file = String::from(PREAMBLE);
+    main_file.push_str(template);
+    main_file.push_str(EXECUTION);
+
+    let template = TypstEngine::builder().main_file(main_file).build();
+
+    let mut inputs = Dict::default();
+    inputs.insert(
+        Str::from("csv_path"),
+        Value::Str(csv_path.to_str().unwrap().into()),
+    );
+    inputs.insert("nodkontakt".into(), Value::Str(nodkontakt.into()));
+    let doc = template.compile_with_input(inputs).output.unwrap();
+
+    let options = PdfOptions::default();
+    let pdf = typst_pdf::pdf(&doc, &options).unwrap();
+
+    fs::write("./exm.pdf", pdf).unwrap();
 }
