@@ -143,11 +143,7 @@ const EXECUTION: &str = r#"#let cl = ()
 #for nr in csv(inputs.csv_path) {
   cl.push(nametag_content(nr))
 }
-
-#generate(
-  cl,
-  [#inputs.nodkontakt],
-)"#;
+"#;
 
 /// Compile a Typst nametag document into PDF bytes.
 ///
@@ -160,6 +156,13 @@ const EXECUTION: &str = r#"#let cl = ()
 ///   read as bytes and registered under its bare filename.  Filenames must be
 ///   unique across all supplied resources and the CSV file.
 /// * `nodkontakt` – Emergency-contact string rendered in the document.
+///   The string is interpreted as Typst markup: formatting such as `*bold*`
+///   or `_italic_` will be rendered accordingly.
+///
+///   # Security
+///   The string is embedded verbatim into the Typst source inside a content
+///   block (`[…]`).  Do not pass untrusted user input here, as arbitrary
+///   Typst code could be injected.
 ///
 /// # Errors
 /// Returns a [`CompilationError`] if any file cannot be found or read, if two
@@ -211,9 +214,12 @@ pub fn compile(
     }
 
     // --- Build the Typst document source ---
+    // nodkontakt is embedded as a Typst content literal so the markup it
+    // contains is parsed and rendered correctly (e.g. *bold*, _italic_).
     let mut main_file = String::from(PREAMBLE);
     main_file.push_str(template);
     main_file.push_str(EXECUTION);
+    main_file.push_str(&format!("#generate(\n  cl,\n  [{}],\n)", nodkontakt));
 
     // --- Assemble static binary resolver entries ---
     // CSV first, then remaining resources.
@@ -233,7 +239,8 @@ pub fn compile(
     // --- Inject sys.inputs ---
     let mut inputs = Dict::default();
     inputs.insert(Str::from("csv_path"), Value::Str(csv_name.into()));
-    inputs.insert("nodkontakt".into(), Value::Str(nodkontakt.into()));
+    // nodkontakt is not passed through sys.inputs — it is embedded directly
+    // in the Typst source as a content literal (see main_file construction above).
 
     // --- Compile ---
     let doc = engine
