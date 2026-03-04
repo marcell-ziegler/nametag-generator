@@ -1,10 +1,4 @@
-use std::{fs, path::Path};
-
-use typst::foundations::{Dict, Str, Value};
-use typst_as_lib::{typst_kit_options::TypstKitFontOptions, TypstEngine};
-use typst_pdf::PdfOptions;
-
-const PREAMBLE: &str = r#"// Get names as FirstName A. B. LastName
+// Get names as FirstName A. B. LastName
 #let shorten_name(name) = {
   let split_names = name.split(" ") // For middle name separation
   let names = [
@@ -31,6 +25,9 @@ const PREAMBLE: &str = r#"// Get names as FirstName A. B. LastName
 #let nametag(width, height, content) = {
   align(center + horizon, box(width: width, height: height, stroke: (black + .5pt), content))
 }
+
+// Sätt in din csv här
+// Ladda  upp och ange filnamn
 
 // Inställningar
 #let tag_height = 6cm
@@ -74,58 +71,35 @@ const PREAMBLE: &str = r#"// Get names as FirstName A. B. LastName
   for j in range(num_tag) {
     [#nodkontakt(tag_width, tag_height, size, nodkontakt_info)]
   }
-}"#;
-
-const EXECUTION: &str = r#"#let cl = ()
-
-#import sys: inputs
+}
 
 #let cl = ()
 
-#for nr in csv(inputs.csv_path) {
-  cl.push(nametag_content(nr))
+
+#let nametag_content(name_and_role) = {
+  let role = name_and_role.at(0)
+  let name = shorten_name(name_and_role.at(1))
+
+  [
+    #par(leading: .8em)[#text(size, weight: "bold", font: "Exo")[#name]\
+      #text(.6 * size)[#role]]
+    #v(10%)
+    #rect(width: 100%, height: 4pt, stroke: none, fill: rgb("#ffb600"))
+    #rect(width: 100%, height: 4pt, stroke: none, fill: rgb("#071d49"))
+    #v(10%)
+    #align(center, grid(
+      columns: (1fr, 2fr),
+      rows: 35%,
+      align: (right, left),
+      column-gutter: 10pt,
+      [#image("raketlager.png", height: 100%)], [#image("au-logga.png", height: 100%)],
+    ))
+  ]
 }
 
-#generate(
-  cl,
-  [#inputs.nodkontakt],
-)"#;
-
-pub fn compile(template: &str, csv_path: &Path, nodkontakt: &str) {
-    // Setup file contents
-    let mut main_file = String::from(PREAMBLE);
-    main_file.push_str(template);
-    main_file.push_str(EXECUTION);
-
-    let csv_root = csv_path.parent().expect("CSV root dir should exist");
-
-    let template = TypstEngine::builder()
-        .main_file(main_file)
-        .with_file_system_resolver(csv_root)
-        .search_fonts_with(TypstKitFontOptions::default())
-        .build();
-
-    let mut inputs = Dict::default();
-    inputs.insert(
-        Str::from("csv_path"),
-        Value::Str(
-            csv_path
-                .file_name()
-                .expect("CSV should be a file")
-                .to_str()
-                .unwrap()
-                .into(),
-        ),
-    );
-    inputs.insert("nodkontakt".into(), Value::Str(nodkontakt.into()));
-
-    println!("Compiling document...");
-    let doc = template.compile_with_input(inputs).output.unwrap();
-
-    let options = PdfOptions::default();
-    println!("Generating PDF...");
-    let pdf = typst_pdf::pdf(&doc, &options).unwrap();
-
-    println!("Writing to file...");
-    fs::write("./exm.pdf", pdf).unwrap();
+#for name_and_role in csv("./test.csv") {
+  cl.push(nametag_content(name_and_role))
 }
+
+#generate(cl, [Marcell Ziegler: 123456])
+

@@ -4,7 +4,7 @@
   let name = shorten_name(name_and_role.at(1))
 
   [
-    #par(leading: .8em)[#text(size, weight: "bold", font: "Exo 2")[#name]\
+    #par(leading: .8em)[#text(size, weight: "bold", font: "Exo")[#name]\
       #text(.6 * size)[#role]]
     #v(10%)
     #rect(width: 100%, height: 4pt, stroke: none, fill: rgb("#ffb600"))
@@ -15,7 +15,7 @@
       rows: 35%,
       align: (right, left),
       column-gutter: 10pt,
-      [#image("../images/raketlager.png", height: 100%)], [#image("../images/au-logga.png", height: 100%)],
+      [#image("raketlager.png", height: 100%)], [#image("au-logga.png", height: 100%)],
     ))
   ]
 }
