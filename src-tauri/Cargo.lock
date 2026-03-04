@@ -2875,6 +2875,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-opener",
  "tempfile",
+ "thiserror 1.0.69",
  "typst",
  "typst-as-lib",
  "typst-pdf",

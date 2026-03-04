@@ -17,7 +17,17 @@ pub fn run() {
     // .expect("error while running tauri application");
 
     let templ = include_str!("./au_nametag.typ");
-    let path = Path::new("./src/test.csv");
+    let csv_path = Path::new("./src/test.csv");
+    let resources: &[&Path] = &[
+        Path::new("./src/raketlager.png"),
+        Path::new("./src/au-logga.png"),
+    ];
 
-    compiler::compile(templ, path, "Marcell Ziegler: 123456789");
+    match compiler::compile(templ, csv_path, resources, "Marcell Ziegler: 123456789") {
+        Ok(pdf) => {
+            std::fs::write("./exm.pdf", pdf).expect("Could not write PDF");
+            println!("PDF written to ./exm.pdf");
+        }
+        Err(e) => eprintln!("Compilation failed: {e}"),
+    }
 }
