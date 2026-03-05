@@ -23,7 +23,12 @@ pub fn run() {
         Path::new("./src/au-logga.png"),
     ];
 
-    match compiler::compile(templ, csv_path, resources, "Marcell Ziegler: 123456789") {
+    match compiler::compile(
+        templ,
+        csv_path,
+        resources,
+        "*Marcell Ziegler*: 123456789\\ *Johanna Zazzi:* 123456789",
+    ) {
         Ok(pdf) => {
             std::fs::write("./exm.pdf", pdf).expect("Could not write PDF");
             println!("PDF written to ./exm.pdf");

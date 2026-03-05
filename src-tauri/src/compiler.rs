@@ -93,7 +93,7 @@ const PREAMBLE: &str = r#"// Get names as FirstName A. B. LastName
 // Inställningar
 #let tag_height = 6cm
 #let tag_width = 100%
-#let size = 26pt
+#let size = 24pt
 
 
 #let generate(content_list, nodkontakt_info) = {
@@ -139,6 +139,8 @@ const EXECUTION: &str = r#"#let cl = ()
 #import sys: inputs
 
 #let cl = ()
+
+#set text(font: "Open Sans")
 
 #for nr in csv(inputs.csv_path) {
   cl.push(nametag_content(nr))
@@ -205,11 +207,10 @@ pub fn compile(
         if !seen_names.insert(res_name.clone()) {
             return Err(CompilationError::NameCollision(res_name));
         }
-        let bytes =
-            std::fs::read(res_path).map_err(|e| CompilationError::FileNotReadable {
-                path: res_path.to_path_buf(),
-                source: e,
-            })?;
+        let bytes = std::fs::read(res_path).map_err(|e| CompilationError::FileNotReadable {
+            path: res_path.to_path_buf(),
+            source: e,
+        })?;
         resource_blobs.push((res_name, bytes));
     }
 
@@ -223,8 +224,7 @@ pub fn compile(
 
     // --- Assemble static binary resolver entries ---
     // CSV first, then remaining resources.
-    let mut static_files: Vec<(&str, &[u8])> =
-        Vec::with_capacity(1 + resource_blobs.len());
+    let mut static_files: Vec<(&str, &[u8])> = Vec::with_capacity(1 + resource_blobs.len());
     static_files.push((csv_name.as_str(), csv_bytes.as_slice()));
     for (name, bytes) in &resource_blobs {
         static_files.push((name.as_str(), bytes.as_slice()));
@@ -243,13 +243,14 @@ pub fn compile(
     // in the Typst source as a content literal (see main_file construction above).
 
     // --- Compile ---
-    let doc = engine
-        .compile_with_input(inputs)
-        .output
-        .map_err(|e| CompilationError::TypstError {
-            phase: TypstPhase::Compile,
-            msg: format!("{e}"),
-        })?;
+    let doc =
+        engine
+            .compile_with_input(inputs)
+            .output
+            .map_err(|e| CompilationError::TypstError {
+                phase: TypstPhase::Compile,
+                msg: format!("{e}"),
+            })?;
 
     // --- Generate PDF ---
     let options = PdfOptions::default();
