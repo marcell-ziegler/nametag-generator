@@ -28,4 +28,5 @@ typst = "0.14.2"
 csv = "1.4.0"
 typst-pdf = "0.14.2"
 tempfile = "3.26.0"
+tauri-plugin-dialog = "2"
 
