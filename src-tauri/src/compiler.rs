@@ -62,10 +62,6 @@ impl serde::Serialize for CompilationError {
     }
 }
 
-const PREAMBLE: &str = include_str!("./PREAMBLE.typ");
-
-const EXECUTION: &str = include_str!("./EXECUTION.typ");
-
 /// Compile a Typst nametag document into PDF bytes.
 ///
 /// # Arguments
@@ -95,6 +91,12 @@ pub fn compile(
     resources: &[&Path],
     nodkontakt: &str,
 ) -> Result<Vec<u8>, CompilationError> {
+    // All code before the template
+    const PREAMBLE: &str = include_str!("./PREAMBLE.typ");
+
+    // All code after the template
+    const EXECUTION: &str = include_str!("./EXECUTION.typ");
+
     // --- Validate and read the CSV ---
     if !csv_path.is_file() {
         return Err(CompilationError::FileNotFound(csv_path.to_path_buf()));
