@@ -40,6 +40,14 @@ pub enum CompilationError {
         source: io::Error,
     },
 
+    /// A file could not be written.
+    #[error("file not writable: {path}: {source}")]
+    FileNotWritable {
+        path: PathBuf,
+        #[source]
+        source: io::Error,
+    },
+
     /// A file path does not have a valid filename component.
     #[error("invalid filename: {0}")]
     InvalidFileName(PathBuf),
