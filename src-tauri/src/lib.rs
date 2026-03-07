@@ -7,12 +7,6 @@ use crate::compiler::{compile, CompilationError};
 
 mod compiler;
 
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
 #[tauri::command]
 async fn compile_to_bytes(
     template: String,
@@ -79,7 +73,7 @@ async fn compile_to_file(
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![compile_to_file, compile_to_bytes])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 

@@ -1,39 +1,64 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="styles.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tauri App</title>
-    <script type="module" src="/main.js" defer></script>
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="styles.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Nametag Generator</title>
+        <script type="module" src="/main.js" defer></script>
+    </head>
 
-  <body>
-    <main class="container">
-      <h1>Welcome to Tauri</h1>
+    <body>
+        <div id="app">
+            <header class="header">
+                <h1>Nametag Generator</h1>
+                <div class="header-right">
+                    <div
+                        class="spinner hidden"
+                        id="spinner"
+                        aria-label="Compiling..."
+                    >
+                        Compiling...
+                    </div>
+                </div>
+            </header>
 
-      <div class="row">
-        <a href="https://tauri.app" target="_blank">
-          <img src="/assets/tauri.svg" class="logo tauri" alt="Tauri logo" />
-        </a>
-        <a
-          href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
-          target="_blank"
-        >
-          <img
-            src="/assets/javascript.svg"
-            class="logo vanilla"
-            alt="JavaScript logo"
-          />
-        </a>
-      </div>
-      <p>Click on the Tauri logo to learn more about the framework</p>
+            <div class="layout">
+                <!-- Controls -->
+                <section class="panel">
+                    <h2>Inputs</h2>
 
-      <form class="row" id="greet-form">
-        <input id="greet-input" placeholder="Enter a name..." />
-        <button type="submit">Greet</button>
-      </form>
-      <p id="greet-msg"></p>
-    </main>
-  </body>
+                    <div class="field">
+                        <label>CSV</label>
+                        <div class="row">
+                            <button id="btnPickCsv" type="button">
+                                Chose CSV...
+                            </button>
+                            <div id="csvPath" class="path">No CSV Selected</div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Resources (images etc.)</label>
+                        <div class="row">
+                            <button id="btnAddResources" type="button">
+                                Add resources...
+                            </button>
+                            <button
+                                id="btnClearResources"
+                                type="button"
+                                class="secondary"
+                            >
+                                Clear
+                            </button>
+                        </div>
+                        <ul id="resourcesList" class="list"></ul>
+                        <div class="hint"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div></div>
+        </div>
+    </body>
 </html>
