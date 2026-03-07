@@ -26,13 +26,10 @@
   align(center + horizon, box(width: width, height: height, stroke: (black + .5pt), content))
 }
 
-// Sätt in din csv här
-// Ladda  upp och ange filnamn
-
 // Inställningar
 #let tag_height = 6cm
 #let tag_width = 100%
-#let size = 26pt
+#let size = 24pt
 
 
 #let generate(content_list, nodkontakt_info) = {
@@ -72,34 +69,3 @@
     [#nodkontakt(tag_width, tag_height, size, nodkontakt_info)]
   }
 }
-
-#let cl = ()
-
-
-#let nametag_content(name_and_role) = {
-  let role = name_and_role.at(0)
-  let name = shorten_name(name_and_role.at(1))
-
-  [
-    #par(leading: .8em)[#text(size, weight: "bold", font: "Exo")[#name]\
-      #text(.6 * size)[#role]]
-    #v(10%)
-    #rect(width: 100%, height: 4pt, stroke: none, fill: rgb("#ffb600"))
-    #rect(width: 100%, height: 4pt, stroke: none, fill: rgb("#071d49"))
-    #v(10%)
-    #align(center, grid(
-      columns: (1fr, 2fr),
-      rows: 35%,
-      align: (right, left),
-      column-gutter: 10pt,
-      [#image("raketlager.png", height: 100%)], [#image("au-logga.png", height: 100%)],
-    ))
-  ]
-}
-
-#for name_and_role in csv("./test.csv") {
-  cl.push(nametag_content(name_and_role))
-}
-
-#generate(cl, [Marcell Ziegler: 123456])
-
