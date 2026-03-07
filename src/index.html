@@ -11,7 +11,7 @@
     <body>
         <div id="app">
             <header class="header">
-                <h1>Nametag Generator</h1>
+                <div class="header-left"><h1>Nametag Generator</h1></div>
                 <div class="header-right">
                     <div
                         class="spinner hidden"
@@ -19,6 +19,14 @@
                         aria-label="Compiling..."
                     >
                         Compiling...
+                    </div>
+                    <div class="header-actions">
+                        <button id="btnPreview" class="primary" type="button">
+                            Preview
+                        </button>
+                        <button id="btnExport" type="button">
+                            Export PDF...
+                        </button>
                     </div>
                 </div>
             </header>
@@ -53,12 +61,54 @@
                             </button>
                         </div>
                         <ul id="resourcesList" class="list"></ul>
-                        <div class="hint"></div>
+                        <div class="hint">
+                            Tip: resource names inside Typst are just the
+                            filename (e.g. <code>logo.png</code>)
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="nodkontakt">Emergency Contacts</label>
+                        <textarea
+                            name="nodkontakt"
+                            id="nodkontakt"
+                            placeholder="*Name*: 070-123 45 67\ *Name2*: 076-..."
+                            rows="3"
+                        ></textarea>
+                        <div class="hint">
+                            This string is inserted into Typst as markup (any
+                            Typst syntax works).
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="templateEditor">Template (Typst)</label>
+                        <textarea
+                            id="templateEditor"
+                            spellcheck="false"
+                            placeholder="// Write your Typst template here..."
+                            rows="14"
+                        ></textarea>
+                    </div>
+                </section>
+
+                <!-- Preview -->
+                <section class="panel preview">
+                    <h2>Preview</h2>
+                    <div class="preview-frame">
+                        <iframe
+                            src="about:blank"
+                            frameborder="0"
+                            id="previewFrame"
+                            title="PDF Preview"
+                        ></iframe>
+                    </div>
+                    <div class="hint">
+                        If the PDF doesn't show up, it may be a WebView
+                        limitation on your platform.
                     </div>
                 </section>
             </div>
-
-            <div></div>
         </div>
     </body>
 </html>
