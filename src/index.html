@@ -18,7 +18,12 @@
                         id="spinner"
                         aria-label="Compiling..."
                     >
-                        Compiling...
+                        <span class="spinner-label">Compiling...</span>
+                        <span class="dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </span>
                     </div>
                     <div class="header-actions">
                         <button id="btnPreview" class="primary" type="button">
@@ -90,6 +95,7 @@
                             rows="14"
                         ></textarea>
                     </div>
+                    <div id="status" class="status hidden">
                 </section>
 
                 <!-- Preview -->

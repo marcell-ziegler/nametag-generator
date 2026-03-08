@@ -147,7 +147,9 @@ pub fn compile(
     // nodkontakt is embedded as a Typst content literal so the markup it
     // contains is parsed and rendered correctly (e.g. *bold*, _italic_).
     let mut main_file = String::from(PREAMBLE);
+    main_file.push('\n');
     main_file.push_str(template);
+    main_file.push('\n');
     main_file.push_str(EXECUTION);
     main_file.push_str(&format!("#generate(\n  cl,\n  [{}],\n)", nodkontakt));
 

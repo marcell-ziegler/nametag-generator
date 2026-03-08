@@ -144,7 +144,7 @@ textarea {
         ui-monospace, SFMono-Regular, Menly, Monaco, Consolas, monospace;
     font-size: 12px;
     line-height: 1.5;
-    rasize: vertical;
+    resize: vertical;
 }
 
 textarea:focus {
@@ -240,10 +240,14 @@ textarea:focus {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .spinner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
     border: 1px solid var(--border);
     background: var(--panel3);
     padding: 8px 10px;
@@ -251,13 +255,69 @@ textarea:focus {
     font-size: 12px;
     color: var(--muted);
 }
+.spinner-label {
+    line-height: 1;
+}
 
+.dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 10px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+
+    /* “inactive” dot */
+    background: color-mix(in srgb, var(--primary) 25%, #ffffff);
+
+    animation: dot-pulse 1s infinite ease-in-out;
+}
+
+/* Stagger the animations so they highlight sequentially */
+.dot:nth-child(1) {
+    animation-delay: 0s;
+}
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dot-pulse {
+    0%,
+    80%,
+    100% {
+        background: color-mix(in srgb, var(--primary) 25%, #ffffff);
+        transform: translateY(0);
+        opacity: 0.55;
+    }
+    40% {
+        background: var(--primary);
+        transform: translateY(-1px);
+        opacity: 1;
+    }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .dot {
+        animation: none;
+        opacity: 1;
+        background: var(--primary);
+    }
+}
 .preview-frame {
     border: 1px solid var(--border);
     border-radius: 8px;
     overflow: hidden;
     background: var(--panel3);
     min-height: 70vh;
+    height: 100%;
 }
 
 .preview-frame iframe {

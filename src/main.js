@@ -1,5 +1,10 @@
 import { invoke } from "@tauri-apps/api/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
+import { installCtrlVPasteHandler } from "./src_clipboard_paste.js";
+
+window.addEventListener("DOMContentLoaded", () => {
+    installCtrlVPasteHandler();
+});
 
 const state = {
     csvPath: null, // string | null
@@ -23,6 +28,13 @@ function setBusy(isBusy) {
 
     document.getElementById("templateEditor").readOnly = isBusy;
     document.getElementById("nodkontakt").readOnly = isBusy;
+
+    // const spin = document.getElementById("spinner");
+    // if (isBusy) {
+    //     spin.classList.remove("hidden");
+    // } else {
+    //     spin.classList.add("hidden");
+    // }
 }
 
 function setStatus(text, kind) {
@@ -162,8 +174,8 @@ async function preview() {
     try {
         const pdfBytes = await invoke("compile_to_bytes", {
             template: v.template,
-            csvPathStr: state.csvPath,
-            resourcePathStrs: state.resourcePaths,
+            csvPath: state.csvPath,
+            resourcePaths: state.resourcePaths,
             nodkontakt: v.nodkontakt,
         });
 
@@ -193,12 +205,12 @@ async function exportPdf() {
 
     setBusy(true);
     try {
-        await invoke("export_pdf", {
+        await invoke("compile_to_file", {
             template: v.template,
-            csvPathStr: state.csvPath,
-            resourcePathStrs: state.resourcePaths,
+            csvPath: state.csvPath,
+            resourcePaths: state.resourcePaths,
             nodkontakt: v.nodkontakt,
-            outputPathStr: outputPath,
+            destinationPath: outputPath,
         });
 
         setStatus(`Exported PDF to:\n${outputPath}`, "ok");
